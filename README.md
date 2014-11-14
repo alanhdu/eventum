@@ -58,6 +58,27 @@ python run.py
 
 Finally, go to `localhost:5000` on your browser 
 
+## Task Queue
+
+For development, make sure you call
+
+``` bash
+source bin/activate
+```
+
+Then, to start up RQ for tasks:
+
+```bash
+redis-server
+source config/settings.dev      # or config/settings.sh
+rqworker -c config.flask_config
+```
+
+Tasks should be independent of the Flask app and stored in `app/tasks.py`.
+`rqworker` is a Python program that imports `app/tasks.py`, so there will be
+issues if you try to use the Flask `app` because `create_app()` won't be
+called.
+
 #### Developing without Authentication
 
 It is possible to run Eventum without logging in using Google+ or authenticating with Google Calendar.  To do so, edit `config/settings.sh` and set `GOOGLE_AUTH_ENABLED` to `FALSE`:
@@ -119,7 +140,8 @@ nosetests
 │   │   ├── js       # Javascript files
 │   │   └── scss     # Stylesheets
 │   ├── templates    # HTML templates
-│   └── __init__.py  # All app-wide setup.  Called by `run.py`
+│   ├── __init__.py  # All app-wide setup.  Called by `run.py`
+│   └── tasks.py     # Tasks to run in RQ
 ├── config           # Configuration files
 ├── data             # Backup data
 ├── manage.py        # Various scripts.  Run `python manage.py` to view usage.

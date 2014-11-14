@@ -55,6 +55,10 @@ try:
     APP_LOG_NAME = environ.get("APP_LOG_NAME")
     WERKZEUG_LOG_NAME = environ.get("WERKZEUG_LOG_NAME")
 
+    # Redis settings
+    REDIS_HOST = environ.get("REDIS_HOST")
+    REDIS_PORT = environ.get("REDIS_PORT")
+
 except KeyError:
     """ Throw an error if a setting is missing """
     print ("Some of your settings aren't in the environment."
