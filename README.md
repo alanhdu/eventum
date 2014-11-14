@@ -75,9 +75,8 @@ rqworker -c config.flask_config
 ```
 
 Tasks should be independent of the Flask app and stored in `app/tasks.py`.
-`rqworker` is a Python program that imports `app/tasks.py`, so there will be
-issues if you try to use the Flask `app` because `create_app()` won't be
-called.
+`rqworker` is a Python script that imports `app/tasks.py`, so there will be
+issues if you try to use the Flask `app` (`rqworker` won't call `create_app()`).
 
 #### Developing without Authentication
 
