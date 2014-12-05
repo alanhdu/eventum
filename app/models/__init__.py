@@ -5,9 +5,11 @@ from Image import Image
 from BlogPost import BlogPost
 from Event import Event
 from EventSeries import EventSeries
+from UemEvent import UemEvent
 
 assert (BlogPost,
         Event,
+        UemEvent,
         EventSeries,
         Image,
         Post,

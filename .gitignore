@@ -1,3 +1,4 @@
+*.rdb
 /app/static/css/gen
 /app/static/img/uploaded/*
 !/app/static/img/uploaded/README.md

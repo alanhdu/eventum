@@ -6,17 +6,21 @@
 .. moduleauthor:: Dan Schlosser <dan@danrs.ch>
 """
 
+import time
 import sys
-from flask import g, session, render_template, request, redirect, Blueprint
+
+from flask import g, session, render_template, request, redirect, Blueprint, current_app
 from mongoengine.queryset import DoesNotExist
 import requests
+from app.tasks import test
 
-from app import app
+from app import app, task_queue
 from app.models import User
 
 SUPER_USER_GPLUS_ID = 'super'
 
 base = Blueprint('base', __name__)
+
 
 @app.errorhandler(Exception)
 def exceptionHandler(error):
@@ -95,8 +99,8 @@ def inject_user():
     templates, so that it can be used at will.
     """
     if hasattr(g, 'user'):
-        return dict(current_user=g.user)
-    return dict(current_user=None)
+        return {"current_user": g.user}
+    return {"current_user": None}
 
 @app.after_request
 def add_header(response):

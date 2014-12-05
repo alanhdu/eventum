@@ -4,6 +4,8 @@ import logging
 from flask import Flask
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.assets import Environment, Bundle
+from redis import Redis
+import rq
 
 from config import adi_config
 
@@ -12,6 +14,7 @@ app = None
 adi = dict()
 assets = None
 gcal_client = None
+task_queue = None
 
 def create_app(**config_overrides):
     """This is normal setup code for a Flask app, but we give the option
@@ -23,6 +26,7 @@ def create_app(**config_overrides):
     global adi
     global assets
     global gcal_client
+    global task_queue
     app = Flask(__name__)
 
     # Load config then apply overrides
@@ -54,9 +58,6 @@ def create_app(**config_overrides):
                     .format(app.config['INSTALLED_APP_CREDENTIALS_PATH']))
             exit(1)
 
-    register_blueprints()
-    register_delete_rules()
-
     # Logging
     maxBytes = int(app.config["LOG_FILE_MAX_SIZE"]) * 1024 * 1024   # MB to B
     Handler = logging.handlers.RotatingFileHandler
@@ -72,6 +73,13 @@ def create_app(**config_overrides):
     appHandler.setFormatter(formatter)
 
     app.logger.addHandler(appHandler)
+
+    # set up redis queue
+    with rq.Connection(Redis(app.config["REDIS_HOST"], app.config["REDIS_PORT"])):
+        task_queue = rq.Queue("default")
+
+    register_blueprints()   # should be last two statements
+    register_delete_rules()
 
     return app
 

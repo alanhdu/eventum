@@ -71,11 +71,8 @@ class Event(db.Document):
     """
 
     # MongoEngine ORM metadata
-    meta = {
-        'allow_inheritance': True,
-        'indexes': ['start_date', 'creator'],
-        'ordering': ['-start_date']
-    }
+    meta = {'allow_inheritance': True, 'indexes': ['start_date', 'creator'],
+        'ordering': ['-start_date']}
 
     date_created = db.DateTimeField(required=True, default=now)
     date_modified = db.DateTimeField(required=True, default=now)
@@ -99,6 +96,9 @@ class Event(db.Document):
     facebook_url = db.StringField()
     gcal_id = db.StringField()
     gcal_sequence = db.IntField()
+
+    uem = db.ReferenceField("UemEvent")
+
 
     def get_absolute_url(self):
         """Returns the URL path that points to the client-facing version of
@@ -152,16 +152,14 @@ class Event(db.Document):
             self.long_description = markdown.markdown(self.long_description_markdown,
                                                       ['extra', 'smarty'])
 
-        if (self.start_date and
-                self.end_date and
+        if (self.start_date and self.end_date and
                 self.start_date > self.end_date):
             raise ValidationError("Start date should always come before end "
                                   "date. Got (%r,%r)" % (self.start_date,
                                                          self.end_date))
         # Check times against None, because midnight is represented by 0.
-        if (self.start_date == self.start_time and
-                self.start_time is not None and
-                self.end_time is not None and
+        if (self.start_date == self.end_date and
+                self.start_time is not None and self.end_time is not None and
                 self.start_time > self.end_time):
             raise ValidationError("Start time should always come before end "
                                   "time. Got (%r,%r)" % (self.start_time,
