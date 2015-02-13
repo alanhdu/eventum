@@ -31,7 +31,13 @@ def get_uem_events():
             u = UemEvent()
             u.location = uem_event["location_full"]
             u.uem_id = uem_id
-            u.title = uem_event["title"]
+            u.title = uem_event["title"].strip()
+            if u.title.startswith("Application Development Initiative"):
+                u.title = u.title[len("Application Development Initiative"):].strip()
+            if u.title.startswith("ADI"):
+                u.title = u.title[len("ADI")].strip()
+            if u.title.startswith("-"):
+                u.title = u.title[1:].strip()
 
             u.start = dt.datetime.strptime(uem_event["date_str"] + uem_event["start_time_str"],
                     "%m/%d/%Y%I:%M %p")

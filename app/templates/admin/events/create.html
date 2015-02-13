@@ -127,6 +127,13 @@
         <p class="permalink-base">/{{ event.index }}</p>
         {% endif %}
     </div>
+    <div class="uem">
+    {% if event.uem is not none%}
+        {{ event.uem.title }} at {{ event.uem.location }}
+    {% else %}
+        No UEM ID
+    {% endif %}
+    </div>
     <div class="with-icon">
         <i class="fa fa-map-marker fa-2x"></i>
         {{ macros.render_field(form.location, placeholder="Location", class="location") }}
