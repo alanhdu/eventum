@@ -52,8 +52,7 @@ def register_error_handlers(blueprint):
         current_app.logger.error("Uncaught Exception", exc_info=sys.exc_info())
         if (not current_app.config['DEBUG'] and
                 request.path.startswith('/admin')):
-            flash('An uncaught error occured: {}'.format(error.strerror),
-                  ERROR_FLASH)
+            flash('An uncaught error occured: {}'.format(error), ERROR_FLASH)
             return redirect(url_for('admin.index'))
         current_app.handle_exception(error)  # default error handler
 
